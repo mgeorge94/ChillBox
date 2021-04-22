@@ -59,18 +59,18 @@ button:focus {
 }
 .title-description-container {
   width: 30%;
-  top: 4rem;
+  top: 6rem;
   position: relative;
 }
 .cover-trailer-container .movie-title {
   font-size: 2rem;
   font-weight: 200;
-  color: white;
+  color: var(--other-accent-color);
   margin-bottom: 1rem;
 }
 .movie-description {
-  font-style: italic;
-  font-size: 1.3vw;
+  font-style: oblique;
+  font-size: 1.2vw;
   color: rgb(228, 228, 228);
   padding: 2rem;
 }
@@ -161,7 +161,7 @@ button:focus {
   animation: showNav 1s ease-in-out;
 }
 .nav-btns li:hover {
-  color: var(--accent-color);
+  color: var(--other-accent-color);
   cursor: pointer;
 }
 .nav-btns i {
@@ -200,7 +200,7 @@ button:focus {
 }
 
 .searchbox-input:hover::placeholder {
-  color: var(--accent-color);
+  color: var(--other-accent-color);
 }
 .searchbox-input:focus-within {
   border-bottom: 1px solid white;

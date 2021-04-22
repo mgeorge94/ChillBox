@@ -62,6 +62,8 @@ const createMovieHTML = (title, coverImg) => {
   movieElement.appendChild(movieElementImage);
   movieGrid.appendChild(movieElement);
   movieElementImage.src = coverImg;
+  // add fallback image to image
+  movieElementImage.setAttribute('onerror', ` this.src="./resources/large-cover.jpg"`);
   movieTitle.innerText = title;
 };
 
@@ -77,7 +79,7 @@ const sanitizeGrid = () => {
 // insert matched searched movies
 
 const movieAPI = new URL('https://yts.mx/api/v2/list_movies.json');
-//acces movie api
+//access movie api
 const fetchMovieData = (objectWithParameters) => {
   $.get(movieAPI, objectWithParameters).done(function (data) {
     const movieList = data.data.movies;
@@ -102,9 +104,10 @@ const fetchMovieData = (objectWithParameters) => {
 // things to start when page loads
 window.onload = function () {
   let pageIndex = Math.floor(Math.random() * 100);
-  console.log(pageIndex);
+
   const parameters = {
     page: pageIndex,
+    sort_by: 'year',
   };
   fetchMovieData(parameters);
 };
