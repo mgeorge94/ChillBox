@@ -1,0 +1,14 @@
+{
+  "name": "chillbox",
+  "version": "1.0.0",
+  "description": "a netflix free alternative",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Murgoci George",
+  "license": "ISC",
+  "dependencies": {
+    "popcorn-api": "^1.1.1"
+  }
+}
