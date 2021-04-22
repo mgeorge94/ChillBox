@@ -86,7 +86,6 @@ const fetchMovieData = (objectWithParameters) => {
       let title = movie.title_long;
       titleForSearch = movie.title;
       let movieId = movie.id;
-
       let coverImg = movie.medium_cover_image;
 
       let backgroundImage = movie.background_image_original;
@@ -97,9 +96,38 @@ const fetchMovieData = (objectWithParameters) => {
 
       createMovieHTML(title, coverImg);
     });
+    insertMovieTrailer(movieList);
   });
 };
-window.onload = fetchMovieData();
+// things to start when page loads
+window.onload = function () {
+  let pageIndex = Math.floor(Math.random() * 100);
+  console.log(pageIndex);
+  const parameters = {
+    page: pageIndex,
+  };
+  fetchMovieData(parameters);
+};
+//insert trailer into top
+function insertMovieTrailer(movieList) {
+  const trailerHTML = document.querySelector('.movie-trailer');
+  const movieDescriptionHTML = document.querySelector('.movie-description');
+  console.log(movieList);
+  const movieTitleHTML = document.querySelector('.movie-title');
+  movieList.forEach((movie) => {
+    const randomMovieIndex = [Math.floor(Math.random() * movieList.length)];
+    let movieRandomTrailerCode = movieList[randomMovieIndex].yt_trailer_code;
+    let movieRandomDescription = movieList[randomMovieIndex].summary;
+    let movieRandomTitle = movieList[randomMovieIndex].title_long;
+    if (movieRandomTrailerCode !== '') {
+      let movieTrailer = `https://www.youtube.com/embed/${movieRandomTrailerCode}?showinfo=0&controls=0`;
+      trailerHTML.src = `${movieTrailer}`;
+      console.log(trailerHTML);
+      movieDescriptionHTML.textContent = movieRandomDescription;
+      movieTitleHTML.textContent = movieRandomTitle;
+    }
+  });
+}
 
 //click on favourites btn
 const favouritesBtn = document.querySelector('.favourites-btn');
