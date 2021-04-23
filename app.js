@@ -1,5 +1,3 @@
-// make nav bar btns incline
-
 //show nav on click
 const showNav = () => {
   const burgerBtn = document.querySelector('.fa-bars');
@@ -8,16 +6,17 @@ const showNav = () => {
   const navBtns = navBtnsContainer.querySelectorAll('li');
   let marginBtnLeft = 8;
 
-  let navDelayCounter = 1;
+  let navDelayCounter = 0;
   for (let i = 0; i < navBtns.length; i++) {
     navBtns[i].classList.add('show');
-    navBtns[i].style.animationDelay = navDelayCounter;
+    navBtns[i].style.animationDelay = `${navDelayCounter}s`;
     //   make btns incline
     navBtns[i].style.marginLeft = `${marginBtnLeft}rem`;
     marginBtnLeft -= 1.5;
-    navDelayCounter += 1;
+    navDelayCounter += 0.1;
   }
   burgerBtn.addEventListener('click', (event) => {
+    console.log('click');
     event.stopPropagation();
 
     navContainer.classList.add('show');
@@ -25,6 +24,30 @@ const showNav = () => {
   });
 };
 showNav();
+// show genres
+const showGenres = () => {
+  const genresContainer = document.querySelector('.genres-container');
+  const allGenresBtns = genresContainer.querySelectorAll('li');
+  let marginBtnLeft = 0;
+  let animationDelayCounter = 0.4;
+  // inlay btns
+
+  for (let i = 0; i < allGenresBtns.length; i++) {
+    allGenresBtns[i].classList.add('show');
+    allGenresBtns[i].style.animationDelay = ` ${animationDelayCounter}s`;
+
+    allGenresBtns[i].style.marginLeft = `${marginBtnLeft}rem`;
+    marginBtnLeft += 1;
+    animationDelayCounter += 0.1;
+  }
+  genresContainer.classList.add('show');
+};
+const genresBtn = document.querySelector('.genres-btn');
+genresBtn.addEventListener('click', (event) => {
+  event.stopPropagation();
+  showGenres();
+});
+//hideNav
 const hideNav = () => {
   const burgerBtn = document.querySelector('.fa-bars');
   const navContainer = document.querySelector('.nav-container');
@@ -32,8 +55,15 @@ const hideNav = () => {
   navContainer.classList.remove('show');
   burgerBtn.style.display = 'block';
 };
-//hide nav
-const body = document.querySelector('body').addEventListener('click', hideNav);
+//hide genres Container
+const hideGenresContainer = () => {
+  const genresContainer = document.querySelector('.genres-container');
+  genresContainer.classList.remove('show');
+};
+const body = document.querySelector('body').addEventListener('click', () => {
+  hideNav();
+  hideGenresContainer();
+});
 // prepare for latencies and show animation
 const showAnimation = () => {
   const animationContainer = document.querySelector('.animation-wrapper');
@@ -45,6 +75,7 @@ const showAnimation = () => {
   animationContainer.style.display = 'grid';
   setTimeout(() => {
     animationContainer.style.display = 'none';
+
     grid.style.display = 'grid';
     categoryTitle.style.display = 'block';
   }, 2000);
@@ -89,7 +120,6 @@ const fetchMovieData = (objectWithParameters) => {
       titleForSearch = movie.title;
       let movieId = movie.id;
       let coverImg = movie.medium_cover_image;
-
       let backgroundImage = movie.background_image_original;
       let genre = movie.genres;
       let summary = movie.summary;
@@ -111,23 +141,33 @@ window.onload = function () {
   };
   fetchMovieData(parameters);
 };
+
 //insert trailer into top
 function insertMovieTrailer(movieList) {
   const trailerHTML = document.querySelector('.movie-trailer');
   const movieDescriptionHTML = document.querySelector('.movie-description');
-  console.log(movieList);
+
   const movieTitleHTML = document.querySelector('.movie-title');
   movieList.forEach((movie) => {
+    //paint random movie
     const randomMovieIndex = [Math.floor(Math.random() * movieList.length)];
     let movieRandomTrailerCode = movieList[randomMovieIndex].yt_trailer_code;
     let movieRandomDescription = movieList[randomMovieIndex].summary;
     let movieRandomTitle = movieList[randomMovieIndex].title_long;
+    //paint only movies with valid trailer
     if (movieRandomTrailerCode !== '') {
       let movieTrailer = `https://www.youtube.com/embed/${movieRandomTrailerCode}?showinfo=0&controls=0`;
       trailerHTML.src = `${movieTrailer}`;
-      console.log(trailerHTML);
-      movieDescriptionHTML.textContent = movieRandomDescription;
+
       movieTitleHTML.textContent = movieRandomTitle;
+      // trim down big description
+      if (movieRandomDescription.length > 300) {
+        const slicedMovieDescription = movieRandomDescription.slice(0, 300).concat('', '  ...');
+
+        movieDescriptionHTML.textContent = slicedMovieDescription;
+      } else {
+        movieDescriptionHTML.textContent = movieRandomDescription;
+      }
     }
   });
 }
@@ -175,3 +215,28 @@ searchBar.addEventListener('keypress', (e) => {
     console.log(wantedMovie);
   }
 });
+// match genresBTns to movie genres
+const matchGenres = () => {
+  const allGenreBtns = document.querySelectorAll('.genres-btns >li>span');
+  allGenreBtns.forEach((genre) => {
+    // console.log(genre.textContent);
+    const parameters = {
+      genre: genre.textContent,
+      sort_by: 'year',
+    };
+    fetchMovieData(parameters);
+  });
+};
+// click on genres
+(function clickOnGenres() {
+  const allGenreBtns = document.querySelectorAll('.genres-btns >li');
+  const categoryTitle = document.querySelector('.category-title');
+  allGenreBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      showAnimation();
+      categoryTitle.textContent = btn.textContent;
+      sanitizeGrid();
+      matchGenres();
+    });
+  });
+})();

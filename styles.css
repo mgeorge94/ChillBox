@@ -32,7 +32,6 @@ button:focus {
   justify-content: space-between;
   z-index: 9999;
   position: fixed;
-  padding-bottom: 8rem;
 }
 .top-container img {
   width: 30%;
@@ -40,7 +39,6 @@ button:focus {
   z-index: 3;
 }
 .gradient {
-  position: absolute;
   height: 18rem;
   width: 100%;
   pointer-events: none;
@@ -50,20 +48,20 @@ button:focus {
 }
 /* cover trailer */
 .cover-trailer-container {
-  position: absolute;
-  right: 5rem;
-  top: 9rem;
+  position: relative;
+  top: 10rem;
+  margin: 0 auto 10rem auto;
   height: 35vw;
   width: 90vw;
   display: flex;
 }
 .title-description-container {
   width: 30%;
-  top: 6rem;
+  top: 4vw;
   position: relative;
 }
 .cover-trailer-container .movie-title {
-  font-size: 2rem;
+  font-size: 2vw;
   font-weight: 200;
   color: var(--other-accent-color);
   margin-bottom: 1rem;
@@ -72,7 +70,7 @@ button:focus {
   font-style: oblique;
   font-size: 1.2vw;
   color: rgb(228, 228, 228);
-  padding: 2rem;
+  padding: 2vw;
 }
 .remove-overflow-div {
   width: 70%;
@@ -108,6 +106,7 @@ button:focus {
   bottom: 5rem;
   right: 3rem;
 }
+
 /* nav */
 .fa-bars {
   font-size: 1.3rem;
@@ -122,14 +121,13 @@ button:focus {
 /* nav part */
 .nav-container {
   display: none;
-}
-.nav-container.show {
   position: fixed;
+}
+.nav.show {
   height: 100vh;
   width: 30rem;
   clip-path: polygon(35% 0, 100% 0, 100% 100%, 0% 100%);
   background: rgba(39, 12, 53, 0.8);
-
   right: 0;
   display: flex;
   justify-items: center;
@@ -140,10 +138,10 @@ button:focus {
 }
 @keyframes showNav {
   0% {
-    transform: translateX(100%);
+    transform: translateX(200%);
   }
   100% {
-    transform: translateX(0);
+    transform: translateX(0%);
   }
 }
 .nav-btns {
@@ -154,11 +152,11 @@ button:focus {
 }
 .nav-btns li {
   margin-top: 2rem;
-  display: none;
+  transform: translateX(200%);
 }
 .nav-btns li.show {
   display: block;
-  animation: showNav 1s ease-in-out;
+  animation: showNav 0.6s ease-in-out forwards;
 }
 .nav-btns li:hover {
   color: var(--other-accent-color);
@@ -208,11 +206,46 @@ button:focus {
   width: 40rem;
   transition: width 0.5s ease-in-out;
 }
+/* genres -nav */
+.genres-container {
+  transform: translateX(100%);
+  position: fixed;
+  right: 0;
+}
+.genres-container.show {
+  clip-path: polygon(0% 0, 100% 0, 100% 100%, 35% 100%);
+  overflow-y: scroll;
+  overflow-x: hidden;
+  animation: showNav 1s ease-in-out;
+  background: rgba(43, 7, 85, 0.9);
+  transform: translateX(0%);
+}
+.genres-container img {
+  padding: 1rem;
+  width: 6rem;
+  margin-bottom: -40px;
+}
+.genres-btns {
+  font-size: 1.3rem;
+  position: relative;
+  color: white;
+
+  margin: auto;
+  list-style: none;
+}
+.genres-btns li {
+  transform: translateX(200%);
+}
+.genres-btns li.show {
+  padding-top: 2rem;
+  cursor: pointer;
+  animation: showNav 0.6s ease-in-out forwards;
+}
 /* top viewd this week */
 .category-title {
   color: white;
   font-size: 1.7rem;
-  padding-top: 50vw;
+  position: relative;
   padding-left: 2rem;
   padding-bottom: 3rem;
 }
@@ -220,13 +253,16 @@ button:focus {
 
 .animation-wrapper {
   display: none;
-  height: 100vh;
+
   justify-content: center;
   align-items: center;
   position: fixed;
   max-width: 10rem;
   left: 50%;
+  bottom: 50%;
   transform: translateX(-50%);
+  z-index: 1111;
+  /* background: lime; */
 }
 
 .animation-piece-container {
