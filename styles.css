@@ -6,6 +6,8 @@
 :root {
   --accent-color: rgb(163, 42, 226);
   --other-accent-color: #b27bf0;
+  --dark-accent-color: #2b0755e6;
+  --very-dark-accent-color: #0c011d;
 }
 body {
   font-family: Roboto;
@@ -13,17 +15,7 @@ body {
   background: rgb(26, 26, 26);
   overflow-x: hidden;
 }
-button,
-button:hover,
-button:focus {
-  margin: 0;
-  outline: 0;
-  border: 0;
-  background: transparent;
-  padding: 0;
-  cursor: pointer;
-}
-/* nav container */
+/*  nav container */
 .top-container {
   width: 100%;
   pointer-events: none;
@@ -105,6 +97,16 @@ button:focus {
   position: absolute;
   bottom: 5rem;
   right: 3rem;
+  box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.8);
+  margin: 0;
+  outline: 0;
+  border: 0;
+  cursor: pointer;
+  border-radius: 3px;
+}
+.watch-btn:hover,
+.watch-btn:focus {
+  background-color: var(--other-accent-color);
 }
 
 /* nav */
@@ -217,7 +219,7 @@ button:focus {
   overflow-y: scroll;
   overflow-x: hidden;
   animation: showNav 1s ease-in-out;
-  background: rgba(43, 7, 85, 0.9);
+  background: var(--dark-accent-color);
   transform: translateX(0%);
 }
 .genres-container img {
@@ -526,6 +528,7 @@ li:nth-child(2) {
 .movie-element-image {
   width: 100%;
   object-fit: cover;
+  pointer-events: none;
 }
 
 .movie-element h5 {
@@ -541,4 +544,83 @@ li:nth-child(2) {
   width: 100%;
   font-size: 1rem;
   z-index: 1;
+}
+/* movie detail container  */
+.movie-player-container {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 9999;
+  display: none;
+  background-color: rgba(26, 26, 26, 0.9);
+  background-image: url(../Musicare/resources/splitLandingPage/landingPage-Left.jpg);
+}
+.movie-details {
+  background: rgba(29, 3, 58, 0.7);
+
+  clip-path: polygon(0 0, 100% 0, 74% 100%, 0% 100%);
+  height: 100%;
+  width: 30rem;
+  top: 0;
+  left: 0;
+  position: absolute;
+}
+.video-player > .movie-title {
+  color: white;
+  text-transform: uppercase;
+  font-size: 4rem;
+  font-weight: 700;
+  margin-top: 4rem;
+  margin-left: 14rem;
+  white-space: nowrap;
+  overflow: visible;
+}
+.movie-details ul {
+  color: white;
+  font-size: 1.3rem;
+  top: 8rem;
+  margin: 3rem auto auto 3rem;
+  list-style: none;
+  position: relative;
+}
+.movie-details li {
+  padding-top: 3rem;
+}
+.movie-details .fas {
+  color: var(--other-accent-color);
+  font-size: 2rem;
+  padding-right: 2rem;
+}
+.fa-quote-left {
+  position: absolute;
+  font-size: 5rem;
+  color: var(--accent-color);
+  z-index: -1;
+  opacity: 0.3;
+  left: -2rem;
+  top: 0rem;
+}
+.video-player > .movie-description {
+  color: white;
+  font-size: 1rem;
+  font-style: italic;
+  margin-right: 5rem;
+  margin-top: 5rem;
+  position: relative;
+  width: 60%;
+  float: right;
+  z-index: -1;
+}
+.fa-window-close {
+  position: absolute;
+  right: 3rem;
+  top: 3rem;
+  color: var(--accent-color);
+  font-size: 2rem;
+}
+.fa-window-close:hover,
+.fa-window-close:focus {
+  color: var(--other-accent-color);
 }

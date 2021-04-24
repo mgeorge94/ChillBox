@@ -9,6 +9,7 @@
   "author": "Murgoci George",
   "license": "ISC",
   "dependencies": {
-    "popcorn-api": "^1.1.1"
+    "popcorn-api": "^1.1.1",
+    "webtorrent": "^0.118.0"
   }
 }

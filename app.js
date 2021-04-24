@@ -81,10 +81,26 @@ const showAnimation = () => {
   }, 2000);
 };
 //create movie html
-const createMovieHTML = (title, coverImg) => {
+const createMovieHTML = (movie) => {
+  // get movie data
+  let title = movie.title_long;
+  let titleForSearch = movie.title;
+  let movieId = movie.id;
+  let coverImg = movie.medium_cover_image;
+  let backgroundImage = movie.background_image_original;
+
+  let summary = movie.summary;
+  let description = movie.description_full;
+  let rating = movie.rating;
+  let language = movie.language;
+  let year = movie.year;
+  let genres = movie.genres.join(', ');
+
+  //create movie data
   const movieGrid = document.querySelector('.movie-grid');
   const movieElement = document.createElement('div');
   movieElement.classList.add('movie-element');
+
   const movieTitle = document.createElement('h5');
   movieTitle.classList.add('movie-title');
   movieElement.appendChild(movieTitle);
@@ -96,6 +112,16 @@ const createMovieHTML = (title, coverImg) => {
   // add fallback image to image
   movieElementImage.setAttribute('onerror', ` this.src="./resources/large-cover.jpg"`);
   movieTitle.innerText = title;
+  //set attributes for each movie
+  movieElement.setAttribute('data-id', movieId);
+  movieElement.setAttribute('data-genres', genres);
+  movieElement.setAttribute('data-year', year);
+  movieElement.setAttribute('data-language', language);
+  movieElement.setAttribute('data-rating', rating);
+  movieElement.setAttribute('data-description', description);
+  movieElement.setAttribute('data-backgroundImage', backgroundImage);
+  movieElement.setAttribute('data-title', titleForSearch);
+  clickOnInstrumentCard();
 };
 
 // sanitize grid
@@ -116,18 +142,9 @@ const fetchMovieData = (objectWithParameters) => {
     const movieList = data.data.movies;
 
     movieList.forEach((movie) => {
-      let title = movie.title_long;
-      titleForSearch = movie.title;
-      let movieId = movie.id;
-      let coverImg = movie.medium_cover_image;
-      let backgroundImage = movie.background_image_original;
-      let genre = movie.genres;
-      let summary = movie.summary;
-      let description = movie.description_full;
-      let rating = movie.rating;
-
-      createMovieHTML(title, coverImg);
+      createMovieHTML(movie);
     });
+
     insertMovieTrailer(movieList);
   });
 };
@@ -240,3 +257,41 @@ const matchGenres = () => {
     });
   });
 })();
+
+// click on instrument card
+const clickOnInstrumentCard = () => {
+  const moviePlayerContainer = document.querySelector('.movie-player-container');
+  const allMovieElements = document.querySelectorAll('.movie-element');
+  const movieGenre = document.querySelector('.genres > span');
+  const movieTitle = moviePlayerContainer.querySelector('.movie-title');
+  const movieRating = document.querySelector('.imdb-rating > span');
+  const movieLanguage = document.querySelector('.language > span');
+  const movieYear = document.querySelector('.year > span');
+  const movieDescription = moviePlayerContainer.querySelector('.movie-description');
+  allMovieElements.forEach((movieElement) => {
+    movieElement.addEventListener('click', () => {
+      movieGenre.textContent = movieElement.dataset.genres;
+      movieTitle.textContent = movieElement.dataset.title;
+      movieRating.textContent = movieElement.dataset.rating;
+      movieLanguage.textContent = movieElement.dataset.language;
+      movieYear.innerText = movieElement.dataset.year;
+      movieDescription.textContent = movieElement.dataset.description;
+      moviePlayerContainer.style.display = 'flex';
+    });
+  });
+};
+// //////////////////////////////////////////////////////////////////
+// var client = new WebTorrent();
+
+// var torrentId =
+//   'magnet:?xt=urn:btih:08ada5a7a6183aae1e09d831df6748d566095a10&dn=Sintel&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&ws=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2F&xs=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2Fsintel.torrent';
+
+// client.add(torrentId, function (torrent) {
+//   // Torrents can contain many files. Let's use the .mp4 file
+//   var file = torrent.files.find(function (file) {
+//     return file.name.endsWith('.mp4');
+//   });
+//   const test = document.querySelector('.testing');
+//   // Display the file by adding it to the DOM. Supports video, audio, image, etc. files
+//   file.appendTo(test);
+// });
