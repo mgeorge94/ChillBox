@@ -95,6 +95,8 @@ const createMovieHTML = (movie) => {
   let language = movie.language;
   let year = movie.year;
   let genres = movie.genres.join(', ');
+  let torrentHash = movie.torrents[0].hash;
+  let slug = movie.slug;
 
   //create movie data
   const movieGrid = document.querySelector('.movie-grid');
@@ -121,6 +123,8 @@ const createMovieHTML = (movie) => {
   movieElement.setAttribute('data-description', description);
   movieElement.setAttribute('data-backgroundImage', backgroundImage);
   movieElement.setAttribute('data-title', titleForSearch);
+  movieElement.setAttribute('data-torrentHash', torrentHash);
+  movieElement.setAttribute('data-slug', slug);
   clickOnInstrumentCard();
 };
 
@@ -277,21 +281,59 @@ const clickOnInstrumentCard = () => {
       movieYear.innerText = movieElement.dataset.year;
       movieDescription.textContent = movieElement.dataset.description;
       moviePlayerContainer.style.display = 'flex';
+      torrentId = `magnet:?xt=urn:btih:${movieElement.dataset.torrenthash}&dn=${movieElement.dataset.slug}&tr=udp://open.demonii.com:1337/announce&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.coppersurfer.tk:6969&tr=udp://glotorrents.pw:6969/announce&tr=udp://tracker.opentrackr.org:1337/announce&tr=udp://torrent.gresille.org:80/announce&tr=udp://p4p.arenabg.com:1337&tr=udp://tracker.leechers-paradise.org:6969 `;
+      clickOnWatchNow();
+      insertVideoSource(torrentId, movieElement.dataset.backgroundImage);
+      exitDescriptionMode();
+      prepareForWatching();
     });
   });
 };
-// //////////////////////////////////////////////////////////////////
-// var client = new WebTorrent();
+// insert  video source into players
+const insertVideoSource = (torrentId, backgroundImage) => {
+  const videoPlayerContainer = document.querySelector('.video-player');
+  const container = document.querySelector('.player-container');
+  const videoJs = document.createElement('script');
+  videoJs.setAttribute('src', 'https://cdn.jsdelivr.net/npm/@webtor/player-sdk-js/dist/index.min.js');
+  videoJs.setAttribute('async', true);
+  videoJs.setAttribute('charset', 'utf-8');
+  videoPlayerContainer.appendChild(videoJs);
+  const videoPlayer = document.createElement('video');
 
-// var torrentId =
-//   'magnet:?xt=urn:btih:08ada5a7a6183aae1e09d831df6748d566095a10&dn=Sintel&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&ws=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2F&xs=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2Fsintel.torrent';
+  videoPlayer.setAttribute('id', 'movie-player');
+  videoPlayer.setAttribute('src', torrentId);
+  videoPlayer.setAttribute('controls', 'true');
+  videoPlayer.setAttribute('poster', backgroundImage);
 
-// client.add(torrentId, function (torrent) {
-//   // Torrents can contain many files. Let's use the .mp4 file
-//   var file = torrent.files.find(function (file) {
-//     return file.name.endsWith('.mp4');
-//   });
-//   const test = document.querySelector('.testing');
-//   // Display the file by adding it to the DOM. Supports video, audio, image, etc. files
-//   file.appendTo(test);
-// });
+  container.append(videoPlayer);
+};
+// click on watch btn
+const clickOnWatchNow = () => {
+  const watchBtn = document.querySelector('.play-btn');
+  const movieDescription = document.querySelector('#full-description');
+  const container = document.querySelector('.player-container');
+
+  watchBtn.addEventListener('click', () => {
+    movieDescription.style.display = 'none';
+    watchBtn.style.display = 'none';
+    container.style.display = 'flex';
+    console.log('ccat');
+  });
+};
+// exit movie-description-mode
+const exitDescriptionMode = () => {
+  const exitButton = document.querySelector('.fa-window-close');
+  const movieDescriptionContainer = document.querySelector('.movie-player-container');
+  exitButton.addEventListener('click', () => {
+    movieDescriptionContainer.style.display = 'none';
+  });
+};
+//make sure that paragraph and watchBtn are visible and player is not
+const prepareForWatching = () => {
+  const movieDescription = document.querySelector('#full-description');
+  const watchBtn = document.querySelector('.play-btn');
+  const videoPlayerContainer = document.querySelector('.player-container');
+  movieDescription.style.display = 'block';
+  watchBtn.style.display = 'block';
+  videoPlayerContainer.style.display = 'none';
+};

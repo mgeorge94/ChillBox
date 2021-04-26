@@ -29,6 +29,7 @@ body {
   width: 30%;
   min-width: 20rem;
   z-index: 3;
+  position: relative;
 }
 .gradient {
   height: 18rem;
@@ -552,7 +553,7 @@ li:nth-child(2) {
   position: fixed;
   right: 0;
   top: 0;
-  z-index: 9999;
+  z-index: 99999;
   display: none;
   background-color: rgba(26, 26, 26, 0.9);
   background-image: url(../Musicare/resources/splitLandingPage/landingPage-Left.jpg);
@@ -623,4 +624,16 @@ li:nth-child(2) {
 .fa-window-close:hover,
 .fa-window-close:focus {
   color: var(--other-accent-color);
+}
+
+#movie-player {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  right: 5rem;
+  bottom: 5rem;
+}
+.player-container {
+  display: none;
 }
