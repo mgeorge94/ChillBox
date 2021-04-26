@@ -15,6 +15,10 @@ body {
   background: rgb(26, 26, 26);
   overflow-x: hidden;
 }
+a {
+  text-decoration: none;
+  color: white;
+}
 /*  nav container */
 .top-container {
   width: 100%;
@@ -161,10 +165,12 @@ body {
   display: block;
   animation: showNav 0.6s ease-in-out forwards;
 }
-.nav-btns li:hover {
+.nav-btns li:hover,
+.nav-btns a:hover {
   color: var(--other-accent-color);
   cursor: pointer;
 }
+
 .nav-btns i {
   padding: 1rem;
   font-size: 1.5rem;
@@ -575,7 +581,7 @@ li:nth-child(2) {
   font-weight: 700;
   margin-top: 4rem;
   margin-left: 14rem;
-  white-space: nowrap;
+  /* white-space: nowrap; */
   overflow: visible;
 }
 .movie-details ul {
@@ -616,8 +622,8 @@ li:nth-child(2) {
 }
 .fa-window-close {
   position: absolute;
-  right: 3rem;
-  top: 3rem;
+  right: 2rem;
+  top: 2rem;
   color: var(--accent-color);
   font-size: 2rem;
 }

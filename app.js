@@ -16,11 +16,11 @@ const showNav = () => {
     navDelayCounter += 0.1;
   }
   burgerBtn.addEventListener('click', (event) => {
-    console.log('click');
     event.stopPropagation();
 
     navContainer.classList.add('show');
     burgerBtn.style.display = 'none';
+    // getMovieByChance();
   });
 };
 showNav();
@@ -132,7 +132,7 @@ const createMovieHTML = (movie) => {
 
 const sanitizeGrid = () => {
   const movieGrid = document.querySelector('.movie-grid');
-
+  console.log('grid sanitised');
   while (movieGrid.lastElementChild) {
     movieGrid.removeChild(movieGrid.lastElementChild);
   }
@@ -261,8 +261,21 @@ const matchGenres = () => {
     });
   });
 })();
+// get random movie for chance btn
+(function getMovieByChance() {
+  const chanceBtn = document.querySelector('.chance-btn');
 
+  chanceBtn.addEventListener('click', () => {
+    let pageIndex = Math.floor(Math.random() * 100);
+
+    const parameters = { limit: 1, page: pageIndex };
+    sanitizeGrid();
+    fetchMovieData(parameters);
+    showAnimation();
+  });
+})();
 // click on instrument card
+let trigger = false;
 const clickOnInstrumentCard = () => {
   const moviePlayerContainer = document.querySelector('.movie-player-container');
   const allMovieElements = document.querySelectorAll('.movie-element');
@@ -272,40 +285,47 @@ const clickOnInstrumentCard = () => {
   const movieLanguage = document.querySelector('.language > span');
   const movieYear = document.querySelector('.year > span');
   const movieDescription = moviePlayerContainer.querySelector('.movie-description');
+
   allMovieElements.forEach((movieElement) => {
     movieElement.addEventListener('click', () => {
       movieGenre.textContent = movieElement.dataset.genres;
+
       movieTitle.textContent = movieElement.dataset.title;
       movieRating.textContent = movieElement.dataset.rating;
       movieLanguage.textContent = movieElement.dataset.language;
       movieYear.innerText = movieElement.dataset.year;
       movieDescription.textContent = movieElement.dataset.description;
       moviePlayerContainer.style.display = 'flex';
+
       torrentId = `magnet:?xt=urn:btih:${movieElement.dataset.torrenthash}&dn=${movieElement.dataset.slug}&tr=udp://open.demonii.com:1337/announce&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.coppersurfer.tk:6969&tr=udp://glotorrents.pw:6969/announce&tr=udp://tracker.opentrackr.org:1337/announce&tr=udp://torrent.gresille.org:80/announce&tr=udp://p4p.arenabg.com:1337&tr=udp://tracker.leechers-paradise.org:6969 `;
+
       clickOnWatchNow();
-      insertVideoSource(torrentId, movieElement.dataset.backgroundImage);
       exitDescriptionMode();
       prepareForWatching();
+      insertVideoSource(torrentId);
     });
   });
 };
 // insert  video source into players
 const insertVideoSource = (torrentId, backgroundImage) => {
-  const videoPlayerContainer = document.querySelector('.video-player');
-  const container = document.querySelector('.player-container');
-  const videoJs = document.createElement('script');
-  videoJs.setAttribute('src', 'https://cdn.jsdelivr.net/npm/@webtor/player-sdk-js/dist/index.min.js');
-  videoJs.setAttribute('async', true);
-  videoJs.setAttribute('charset', 'utf-8');
-  videoPlayerContainer.appendChild(videoJs);
-  const videoPlayer = document.createElement('video');
+  if (trigger === false) {
+    const videoPlayerContainer = document.querySelector('.video-player');
+    const container = document.querySelector('.player-container');
+    const videoJs = document.createElement('script');
+    videoJs.setAttribute('src', 'https://cdn.jsdelivr.net/npm/@webtor/player-sdk-js/dist/index.min.js');
+    videoJs.setAttribute('async', true);
+    videoJs.setAttribute('charset', 'utf-8');
+    videoPlayerContainer.appendChild(videoJs);
+    const videoPlayer = document.createElement('video');
 
-  videoPlayer.setAttribute('id', 'movie-player');
-  videoPlayer.setAttribute('src', torrentId);
-  videoPlayer.setAttribute('controls', 'true');
-  videoPlayer.setAttribute('poster', backgroundImage);
+    videoPlayer.setAttribute('id', 'movie-player');
+    videoPlayer.setAttribute('src', torrentId);
+    videoPlayer.setAttribute('controls', 'true');
+    videoPlayer.setAttribute('poster', backgroundImage);
 
-  container.append(videoPlayer);
+    container.append(videoPlayer);
+    trigger = true;
+  }
 };
 // click on watch btn
 const clickOnWatchNow = () => {
@@ -317,15 +337,17 @@ const clickOnWatchNow = () => {
     movieDescription.style.display = 'none';
     watchBtn.style.display = 'none';
     container.style.display = 'flex';
-    console.log('ccat');
   });
 };
 // exit movie-description-mode
 const exitDescriptionMode = () => {
   const exitButton = document.querySelector('.fa-window-close');
   const movieDescriptionContainer = document.querySelector('.movie-player-container');
+  const videoElement = document.querySelector('.player-container');
   exitButton.addEventListener('click', () => {
     movieDescriptionContainer.style.display = 'none';
+    videoElement.innerHTML = '';
+    trigger = false;
   });
 };
 //make sure that paragraph and watchBtn are visible and player is not
