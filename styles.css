@@ -229,10 +229,9 @@ a {
   background: var(--dark-accent-color);
   transform: translateX(0%);
 }
-.genres-container img {
+.genres-container .fas {
   padding: 1rem;
-  width: 6rem;
-  margin-bottom: -40px;
+  font-size: 2rem;
 }
 .genres-btns {
   font-size: 1.3rem;
@@ -242,15 +241,20 @@ a {
   margin: auto;
   list-style: none;
 }
+
 .genres-btns li {
   transform: translateX(200%);
 }
+.genres-btns li:hover {
+  color: var(--other-accent-color);
+}
 .genres-btns li.show {
   padding-top: 2rem;
+
   cursor: pointer;
   animation: showNav 0.6s ease-in-out forwards;
 }
-/* top viewd this week */
+/* top viewed this week */
 .category-title {
   color: white;
   font-size: 1.7rem;
@@ -564,6 +568,18 @@ li:nth-child(2) {
   background-color: rgba(26, 26, 26, 0.9);
   background-image: url(../Musicare/resources/splitLandingPage/landingPage-Left.jpg);
 }
+.movie-player-container.show {
+  display: flex;
+}
+/* .movie-player-container.show .movie-details {
+  transform: translateX(0);
+  transition: transform 5s ease;
+}
+.movie-player-container.show .video-player {
+  transform: translateX(0);
+  transition: transform 5s ease;
+} */
+
 .movie-details {
   background: rgba(29, 3, 58, 0.7);
 
@@ -571,9 +587,33 @@ li:nth-child(2) {
   height: 100%;
   width: 30rem;
   top: 0;
-  left: 0;
+  transform: translateX(-100%);
   position: absolute;
+  animation: show-details 1s ease forwards;
+  animation-delay: 0.5s;
 }
+@keyframes show-details {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.video-player {
+  animation: show-player 1s ease forwards;
+  z-index: -1;
+}
+@keyframes show-player {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
 .video-player > .movie-title {
   color: white;
   text-transform: uppercase;
@@ -620,18 +660,20 @@ li:nth-child(2) {
   float: right;
   z-index: -1;
 }
-.fa-window-close {
+.fa-times {
   position: absolute;
   right: 2rem;
   top: 2rem;
   color: var(--accent-color);
   font-size: 2rem;
 }
-.fa-window-close:hover,
-.fa-window-close:focus {
+.fa-times:hover,
+.fa-times:focus {
   color: var(--other-accent-color);
 }
-
+.trailer-btn {
+  right: 16rem;
+}
 #movie-player {
   position: absolute;
   display: flex;

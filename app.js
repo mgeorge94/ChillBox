@@ -37,7 +37,7 @@ const showGenres = () => {
     allGenresBtns[i].style.animationDelay = ` ${animationDelayCounter}s`;
 
     allGenresBtns[i].style.marginLeft = `${marginBtnLeft}rem`;
-    marginBtnLeft += 1;
+    marginBtnLeft += 1.3;
     animationDelayCounter += 0.1;
   }
   genresContainer.classList.add('show');
@@ -232,8 +232,6 @@ searchBar.addEventListener('keypress', (e) => {
     };
     fetchMovieData(parameters);
     showAnimation();
-  } else if (e.key === 'Backspace') {
-    console.log(wantedMovie);
   }
 });
 // match genresBTns to movie genres
@@ -278,24 +276,32 @@ const matchGenres = () => {
 let trigger = false;
 const clickOnInstrumentCard = () => {
   const moviePlayerContainer = document.querySelector('.movie-player-container');
+
   const allMovieElements = document.querySelectorAll('.movie-element');
   const movieGenre = document.querySelector('.genres > span');
   const movieTitle = moviePlayerContainer.querySelector('.movie-title');
   const movieRating = document.querySelector('.imdb-rating > span');
   const movieLanguage = document.querySelector('.language > span');
   const movieYear = document.querySelector('.year > span');
-  const movieDescription = moviePlayerContainer.querySelector('.movie-description');
+  const movieDescription = moviePlayerContainer.querySelector('.movie-description>span');
 
   allMovieElements.forEach((movieElement) => {
     movieElement.addEventListener('click', () => {
-      movieGenre.textContent = movieElement.dataset.genres;
-
+      if (movieElement.dataset.genres.split(', ').length > 2) {
+        movieElement.dataset.genres.split(' ').splice(0, 4).join(' ');
+      } else {
+        movieGenre.textContent = movieElement.dataset.genres;
+      }
       movieTitle.textContent = movieElement.dataset.title;
       movieRating.textContent = movieElement.dataset.rating;
       movieLanguage.textContent = movieElement.dataset.language;
       movieYear.innerText = movieElement.dataset.year;
       movieDescription.textContent = movieElement.dataset.description;
-      moviePlayerContainer.style.display = 'flex';
+      // console.log(moviePlayerContainer);
+      moviePlayerContainer.classList.add('show');
+      console.log('added');
+      // videoPlayerAside.classList.add('show');
+      // movieDetailsAside.classList.add('show');
 
       torrentId = `magnet:?xt=urn:btih:${movieElement.dataset.torrenthash}&dn=${movieElement.dataset.slug}&tr=udp://open.demonii.com:1337/announce&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.coppersurfer.tk:6969&tr=udp://glotorrents.pw:6969/announce&tr=udp://tracker.opentrackr.org:1337/announce&tr=udp://torrent.gresille.org:80/announce&tr=udp://p4p.arenabg.com:1337&tr=udp://tracker.leechers-paradise.org:6969 `;
 
@@ -330,7 +336,7 @@ const insertVideoSource = (torrentId, backgroundImage) => {
 // click on watch btn
 const clickOnWatchNow = () => {
   const watchBtn = document.querySelector('.play-btn');
-  const movieDescription = document.querySelector('#full-description');
+  const movieDescription = document.querySelector('#full-description>span');
   const container = document.querySelector('.player-container');
 
   watchBtn.addEventListener('click', () => {
@@ -341,18 +347,19 @@ const clickOnWatchNow = () => {
 };
 // exit movie-description-mode
 const exitDescriptionMode = () => {
-  const exitButton = document.querySelector('.fa-window-close');
+  const exitButton = document.querySelector('.fa-times');
   const movieDescriptionContainer = document.querySelector('.movie-player-container');
   const videoElement = document.querySelector('.player-container');
   exitButton.addEventListener('click', () => {
-    movieDescriptionContainer.style.display = 'none';
+    movieDescriptionContainer.classList.remove('show');
+    console.log('smth');
     videoElement.innerHTML = '';
     trigger = false;
   });
 };
 //make sure that paragraph and watchBtn are visible and player is not
 const prepareForWatching = () => {
-  const movieDescription = document.querySelector('#full-description');
+  const movieDescription = document.querySelector('#full-description>span');
   const watchBtn = document.querySelector('.play-btn');
   const videoPlayerContainer = document.querySelector('.player-container');
   movieDescription.style.display = 'block';
