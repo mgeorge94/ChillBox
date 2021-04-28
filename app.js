@@ -80,6 +80,7 @@ const showAnimation = () => {
     categoryTitle.style.display = 'block';
   }, 2000);
 };
+
 //create movie html
 const createMovieHTML = (movie) => {
   // get movie data
@@ -87,9 +88,8 @@ const createMovieHTML = (movie) => {
   let titleForSearch = movie.title;
   let movieId = movie.id;
   let coverImg = movie.medium_cover_image;
-  let backgroundImage = movie.background_image_original;
+  let trailer = movie.yt_trailer_code;
 
-  let summary = movie.summary;
   let description = movie.description_full;
   let rating = movie.rating;
   let language = movie.language;
@@ -121,7 +121,8 @@ const createMovieHTML = (movie) => {
   movieElement.setAttribute('data-language', language);
   movieElement.setAttribute('data-rating', rating);
   movieElement.setAttribute('data-description', description);
-  movieElement.setAttribute('data-backgroundImage', backgroundImage);
+  movieElement.setAttribute('data-trailer', `https://www.youtube.com/watch?v=${trailer}`);
+
   movieElement.setAttribute('data-title', titleForSearch);
   movieElement.setAttribute('data-torrentHash', torrentHash);
   movieElement.setAttribute('data-slug', slug);
@@ -132,14 +133,14 @@ const createMovieHTML = (movie) => {
 
 const sanitizeGrid = () => {
   const movieGrid = document.querySelector('.movie-grid');
-  console.log('grid sanitised');
+
   while (movieGrid.lastElementChild) {
     movieGrid.removeChild(movieGrid.lastElementChild);
   }
 };
 // insert matched searched movies
 
-const movieAPI = new URL('https://yts.mx/api/v2/list_movies.json');
+const movieAPI = new URL('https://yts.mx/api/v2/list_movies.json?with_cast=true');
 //access movie api
 const fetchMovieData = (objectWithParameters) => {
   $.get(movieAPI, objectWithParameters).done(function (data) {
@@ -147,6 +148,7 @@ const fetchMovieData = (objectWithParameters) => {
 
     movieList.forEach((movie) => {
       createMovieHTML(movie);
+      // console.log(movie);
     });
 
     insertMovieTrailer(movieList);
@@ -161,6 +163,7 @@ window.onload = function () {
     sort_by: 'year',
   };
   fetchMovieData(parameters);
+  showAnimation();
 };
 
 //insert trailer into top
@@ -170,11 +173,15 @@ function insertMovieTrailer(movieList) {
 
   const movieTitleHTML = document.querySelector('.movie-title');
   movieList.forEach((movie) => {
+    //html elements
+
     //paint random movie
     const randomMovieIndex = [Math.floor(Math.random() * movieList.length)];
     let movieRandomTrailerCode = movieList[randomMovieIndex].yt_trailer_code;
     let movieRandomDescription = movieList[randomMovieIndex].summary;
     let movieRandomTitle = movieList[randomMovieIndex].title_long;
+
+    //////////////////////////////////////////
     //paint only movies with valid trailer
     if (movieRandomTrailerCode !== '') {
       let movieTrailer = `https://www.youtube.com/embed/${movieRandomTrailerCode}?showinfo=0&controls=0`;
@@ -190,9 +197,41 @@ function insertMovieTrailer(movieList) {
         movieDescriptionHTML.textContent = movieRandomDescription;
       }
     }
+    playFeaturedMovie(movieList, movie, randomMovieIndex);
   });
 }
+//play featured movie
+function playFeaturedMovie(movieList, movie, randomMovieIndex) {
+  // const moviePlayerContainer = document.querySelector('.movie-player-container');
+  const moviePlayerContainer = document.querySelector('.movie-player-container');
+  const watchNowBtn = document.querySelector('#watch-featured-movie-btn');
+  // const allMovieElements = document.querySelectorAll('.movie-element');
+  const movieGenre = document.querySelector('.genres > span');
+  const movieTitle = moviePlayerContainer.querySelector('.movie-title');
+  const movieRating = document.querySelector('.imdb-rating > span');
+  const movieLanguage = document.querySelector('.language > span');
+  const movieYear = document.querySelector('.year > span');
+  const movieDescription = moviePlayerContainer.querySelector('.movie-description>span');
+  const trailerBtn = document.querySelector('.trailer-btn');
+  watchNowBtn.addEventListener('click', () => {
+    console.log(movieList[randomMovieIndex]);
+    movieGenre.innerText = movieList[randomMovieIndex].genres;
+    movieTitle.innerText = movieList[randomMovieIndex].title;
+    movieRating.innerText = movieList[randomMovieIndex].rating;
+    movieLanguage.innerText = movieList[randomMovieIndex].language;
+    movieYear.innerText = movieList[randomMovieIndex].year;
+    movieDescription.innerText = movieList[randomMovieIndex].description_full;
+    moviePlayerContainer.classList.add('show');
 
+    const torrentId = `magnet:?xt=urn:btih:${movieList[randomMovieIndex].torrenthash}&dn=${movieList[randomMovieIndex].slug}&tr=udp://open.demonii.com:1337/announce&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.coppersurfer.tk:6969&tr=udp://glotorrents.pw:6969/announce&tr=udp://tracker.opentrackr.org:1337/announce&tr=udp://torrent.gresille.org:80/announce&tr=udp://p4p.arenabg.com:1337&tr=udp://tracker.leechers-paradise.org:6969 `;
+    console.log(movieList[randomMovieIndex].torrenthash);
+    clickOnWatchNow();
+    exitDescriptionMode();
+    prepareForWatching();
+    insertVideoSource(torrentId);
+    insertMovieTrailerLink(movieList[randomMovieIndex].trailer);
+  });
+}
 //click on favourites btn
 const favouritesBtn = document.querySelector('.favourites-btn');
 favouritesBtn.addEventListener('click', () => {
@@ -284,9 +323,11 @@ const clickOnInstrumentCard = () => {
   const movieLanguage = document.querySelector('.language > span');
   const movieYear = document.querySelector('.year > span');
   const movieDescription = moviePlayerContainer.querySelector('.movie-description>span');
+  const trailerBtn = document.querySelector('.trailer-btn');
 
   allMovieElements.forEach((movieElement) => {
     movieElement.addEventListener('click', () => {
+      //dont show more than 3 genres
       if (movieElement.dataset.genres.split(', ').length > 2) {
         movieElement.dataset.genres.split(' ').splice(0, 4).join(' ');
       } else {
@@ -297,22 +338,25 @@ const clickOnInstrumentCard = () => {
       movieLanguage.textContent = movieElement.dataset.language;
       movieYear.innerText = movieElement.dataset.year;
       movieDescription.textContent = movieElement.dataset.description;
-      // console.log(moviePlayerContainer);
-      moviePlayerContainer.classList.add('show');
-      console.log('added');
-      // videoPlayerAside.classList.add('show');
-      // movieDetailsAside.classList.add('show');
 
-      torrentId = `magnet:?xt=urn:btih:${movieElement.dataset.torrenthash}&dn=${movieElement.dataset.slug}&tr=udp://open.demonii.com:1337/announce&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.coppersurfer.tk:6969&tr=udp://glotorrents.pw:6969/announce&tr=udp://tracker.opentrackr.org:1337/announce&tr=udp://torrent.gresille.org:80/announce&tr=udp://p4p.arenabg.com:1337&tr=udp://tracker.leechers-paradise.org:6969 `;
+      moviePlayerContainer.classList.add('show');
+
+      const torrentId = `magnet:?xt=urn:btih:${movieElement.dataset.torrenthash}&dn=${movieElement.dataset.slug}&tr=udp://open.demonii.com:1337/announce&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.coppersurfer.tk:6969&tr=udp://glotorrents.pw:6969/announce&tr=udp://tracker.opentrackr.org:1337/announce&tr=udp://torrent.gresille.org:80/announce&tr=udp://p4p.arenabg.com:1337&tr=udp://tracker.leechers-paradise.org:6969 `;
 
       clickOnWatchNow();
       exitDescriptionMode();
       prepareForWatching();
       insertVideoSource(torrentId);
+      insertMovieTrailerLink(movieElement.dataset.trailer);
     });
   });
 };
-// insert  video source into players
+// insert movie trailer
+const insertMovieTrailerLink = (link) => {
+  const trailerBtn = document.querySelector('.trailer-btn');
+  trailerBtn.setAttribute('href', link);
+};
+// insert  video source into player
 const insertVideoSource = (torrentId, backgroundImage) => {
   if (trigger === false) {
     const videoPlayerContainer = document.querySelector('.video-player');
@@ -336,33 +380,40 @@ const insertVideoSource = (torrentId, backgroundImage) => {
 // click on watch btn
 const clickOnWatchNow = () => {
   const watchBtn = document.querySelector('.play-btn');
-  const movieDescription = document.querySelector('#full-description>span');
+  const trailerBtn = document.querySelector('.trailer-btn');
+  const movieDescription = document.querySelector('#full-description');
   const container = document.querySelector('.player-container');
 
   watchBtn.addEventListener('click', () => {
-    movieDescription.style.display = 'none';
-    watchBtn.style.display = 'none';
-    container.style.display = 'flex';
+    movieDescription.classList.add('hide');
+    watchBtn.classList.add('hide');
+    trailerBtn.classList.add('hide');
+    container.classList.add('show');
   });
 };
 // exit movie-description-mode
 const exitDescriptionMode = () => {
   const exitButton = document.querySelector('.fa-times');
   const movieDescriptionContainer = document.querySelector('.movie-player-container');
+  const videoPlayerAside = document.querySelector('.video-player');
+  const movieDetailsAside = document.querySelector('.movie-details');
   const videoElement = document.querySelector('.player-container');
   exitButton.addEventListener('click', () => {
     movieDescriptionContainer.classList.remove('show');
-    console.log('smth');
+    movieDetailsAside.style.transform = 'translateX(-100%)';
+    // videoPlayerAside.style.transform = 'translateX(200%)';
     videoElement.innerHTML = '';
     trigger = false;
   });
 };
 //make sure that paragraph and watchBtn are visible and player is not
 const prepareForWatching = () => {
-  const movieDescription = document.querySelector('#full-description>span');
+  const movieDescription = document.querySelector('#full-description');
   const watchBtn = document.querySelector('.play-btn');
+  const trailerBtn = document.querySelector('.trailer-btn');
   const videoPlayerContainer = document.querySelector('.player-container');
-  movieDescription.style.display = 'block';
-  watchBtn.style.display = 'block';
-  videoPlayerContainer.style.display = 'none';
+  movieDescription.classList.remove('hide');
+  watchBtn.classList.remove('hide');
+  trailerBtn.classList.remove('hide');
+  videoPlayerContainer.classList.remove('show');
 };
