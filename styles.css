@@ -109,9 +109,10 @@ a {
   cursor: pointer;
   border-radius: 3px;
   z-index: 12;
+  transition: .4s ease;
 }
 .watch-btn:hover,
-.watch-btn:focus {
+.watch-btn:focus  {
   background-color: var(--other-accent-color);
 }
 
@@ -517,7 +518,6 @@ li:nth-child(2) {
   display: grid;
   gap: 1.5em;
   padding: 1rem;
-
   grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
 }
 .movie-element {
@@ -526,6 +526,7 @@ li:nth-child(2) {
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.8);
   animation: popMovieEl 1s ease-in-out forwards;
   position: relative;
+  cursor: pointer;
 }
 @keyframes popMovieEl {
   0% {
@@ -541,6 +542,7 @@ li:nth-child(2) {
   width: 100%;
   object-fit: cover;
   pointer-events: none;
+  
 }
 
 .movie-element h5 {
@@ -678,24 +680,38 @@ li:nth-child(2) {
   color: var(--other-accent-color);
 }
 .trailer-btn {
+  
+  color: white;
+  padding: 0.7rem 3rem;
+  position: absolute;
+  bottom: 5rem;
   right: 16rem;
+  box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.8);
+  margin: 0;
+  outline: 0;
+  cursor: pointer;
+  border-radius: 3px;
+  border: 3px solid var(--accent-color);
+  transition: .4s ease;
+}
+.trailer-btn:hover, .trailer-btn:focus{
+  border:3px solid var(--other-accent-color);
 }
 
 #movie-player {
   position: absolute;
   right: 5rem;
   bottom: 5rem;
+  background:lime;
 }
 
 .player-container {
-  /* display: none; */
   position: relative;
   transform: rotate(90deg);
 
   right: -200%;
 }
 .player-container.show {
-  /* ? de ce trebuie right -100? */
   right: -100%;
   transform: rotate(0deg);
   transition: all 1s ease;

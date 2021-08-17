@@ -20,7 +20,6 @@ const showNav = () => {
 
     navContainer.classList.add('show');
     burgerBtn.style.display = 'none';
-    // getMovieByChance();
   });
 };
 showNav();
@@ -73,12 +72,12 @@ const showAnimation = () => {
   categoryTitle.style.display = 'none';
   grid.style.display = 'none';
   animationContainer.style.display = 'grid';
-  setTimeout(() => {
+
     animationContainer.style.display = 'none';
 
     grid.style.display = 'grid';
     categoryTitle.style.display = 'block';
-  }, 2000);
+ 
 };
 
 //create movie html
@@ -148,9 +147,8 @@ const fetchMovieData = (objectWithParameters) => {
 
     movieList.forEach((movie) => {
       createMovieHTML(movie);
-      // console.log(movie);
+       showAnimation();
     });
-
     insertMovieTrailer(movieList);
   });
 };
@@ -163,7 +161,6 @@ window.onload = function () {
     sort_by: 'year',
   };
   fetchMovieData(parameters);
-  showAnimation();
 };
 
 //insert trailer into top
@@ -243,7 +240,6 @@ favouritesBtn.addEventListener('click', () => {
     limit: 40,
   };
   fetchMovieData(parameters);
-  showAnimation();
 });
 
 //  click on search btn;
@@ -270,14 +266,12 @@ searchBar.addEventListener('keypress', (e) => {
       query_term: wantedMovie,
     };
     fetchMovieData(parameters);
-    showAnimation();
   }
 });
 // match genresBTns to movie genres
 const matchGenres = () => {
   const allGenreBtns = document.querySelectorAll('.genres-btns >li>span');
   allGenreBtns.forEach((genre) => {
-    // console.log(genre.textContent);
     const parameters = {
       genre: genre.textContent,
       sort_by: 'year',
@@ -291,7 +285,6 @@ const matchGenres = () => {
   const categoryTitle = document.querySelector('.category-title');
   allGenreBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
-      showAnimation();
       categoryTitle.textContent = btn.textContent;
       sanitizeGrid();
       matchGenres();
@@ -308,7 +301,6 @@ const matchGenres = () => {
     const parameters = { limit: 1, page: pageIndex };
     sanitizeGrid();
     fetchMovieData(parameters);
-    showAnimation();
   });
 })();
 // click on instrument card
@@ -357,8 +349,9 @@ const insertMovieTrailerLink = (link) => {
   trailerBtn.setAttribute('href', link);
 };
 // insert  video source into player
-const insertVideoSource = (torrentId, backgroundImage) => {
-  if (trigger === false) {
+const insertVideoSource = (torrentId) => {
+
+  if (!trigger) {
     const videoPlayerContainer = document.querySelector('.video-player');
     const container = document.querySelector('.player-container');
     const videoJs = document.createElement('script');
@@ -371,9 +364,8 @@ const insertVideoSource = (torrentId, backgroundImage) => {
     videoPlayer.setAttribute('id', 'movie-player');
     videoPlayer.setAttribute('src', torrentId);
     videoPlayer.setAttribute('controls', 'true');
-    videoPlayer.setAttribute('poster', backgroundImage);
-
     container.append(videoPlayer);
+    console.log(container)
     trigger = true;
   }
 };
@@ -383,6 +375,7 @@ const clickOnWatchNow = () => {
   const trailerBtn = document.querySelector('.trailer-btn');
   const movieDescription = document.querySelector('#full-description');
   const container = document.querySelector('.player-container');
+  
 
   watchBtn.addEventListener('click', () => {
     movieDescription.classList.add('hide');
@@ -395,13 +388,12 @@ const clickOnWatchNow = () => {
 const exitDescriptionMode = () => {
   const exitButton = document.querySelector('.fa-times');
   const movieDescriptionContainer = document.querySelector('.movie-player-container');
-  const videoPlayerAside = document.querySelector('.video-player');
   const movieDetailsAside = document.querySelector('.movie-details');
   const videoElement = document.querySelector('.player-container');
   exitButton.addEventListener('click', () => {
     movieDescriptionContainer.classList.remove('show');
     movieDetailsAside.style.transform = 'translateX(-100%)';
-    // videoPlayerAside.style.transform = 'translateX(200%)';
+    videoElement.classList.remove('show');
     videoElement.innerHTML = '';
     trigger = false;
   });
